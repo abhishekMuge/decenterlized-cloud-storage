@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { convertBytes } from "./helpers";
 import moment from "moment";
-
+import "bootstrap/dist/css/bootstrap.css";
 class Main extends Component {
   render() {
     return (
@@ -85,6 +85,9 @@ class Main extends Component {
                     <th scope="col" style={{ width: "120px" }}>
                       hash/view/get
                     </th>
+                    <th scope="col" style={{ width: "120px" }}>
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 {this.props.files.map((file, key) => {
@@ -122,6 +125,9 @@ class Main extends Component {
                           >
                             {file.fileHash.substring(0, 10)}...
                           </a>
+                        </td>
+                        <td>
+                          <button>Share file</button>
                         </td>
                       </tr>
                     </thead>

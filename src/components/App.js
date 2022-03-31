@@ -1,9 +1,12 @@
 import DStorage from "../abis/DStorage.json";
 import React, { Component } from "react";
+import { Routes, Route, Link } from "react-router-dom";
 import Navbar from "./Navbar";
 import Main from "./Main";
 import Web3 from "web3";
 import "./App.css";
+import Login from "./Login";
+import Signup from "./Signup";
 
 //Declare IPFS
 const ipfsClient = require("ipfs-http-client");
@@ -54,9 +57,11 @@ class App extends Component {
       // Load files&sort by the newest
       for (var i = filesCount; i >= 1; i--) {
         const file = await dstorage.methods.files(i).call();
-        this.setState({
-          files: [...this.state.files, file],
-        });
+        if (file.uploader == this.state.account) {
+          this.setState({
+            files: [...this.state.files, file],
+          });
+        }
       }
     } else {
       window.alert("DStorage contract not deployed to detected network.");
@@ -131,6 +136,7 @@ class App extends Component {
       loading: false,
       type: null,
       name: null,
+      user: null,
     };
 
     //Bind functions
@@ -141,18 +147,37 @@ class App extends Component {
   render() {
     return (
       <div>
-        <Navbar account={this.state.account} />
-        {this.state.loading ? (
-          <div id="loader" className="text-center mt-5">
-            <p>Loading...</p>
-          </div>
-        ) : (
-          <Main
-            files={this.state.files}
-            captureFile={this.captureFile}
-            uploadFile={this.uploadFile}
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <div>
+                <Navbar account={this.state.account} />
+                {this.state.loading ? (
+                  <div id="loader" className="text-center mt-5">
+                    <p>Loading...</p>
+                  </div>
+                ) : (
+                  <Main
+                    files={this.state.files}
+                    captureFile={this.captureFile}
+                    uploadFile={this.uploadFile}
+                  />
+                )}
+              </div>
+            }
           />
-        )}
+          <Route path="/login" element={<Login />} />
+          <Route
+            path="/signup"
+            element={
+              <Signup
+                account={this.state.account}
+                createUser={this.createUser}
+              />
+            }
+          />
+        </Routes>
       </div>
     );
   }
